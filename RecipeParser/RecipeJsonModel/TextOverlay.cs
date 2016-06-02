@@ -40,13 +40,17 @@ namespace RecipeParser.RecipeJsonModel
             {
                 Lines[i].Bounds.Left = clusters[i];
             }
-            
+
+            // Processing vertical clustering
+            FixDistancesAndHeight();
+        }
+
+        private void FixDistancesAndHeight()
+        {
             int startLine = 0;
-            double distanceCoefficient = 0.8;
+            double distanceCoefficient = 1.0;
             int allDistances = 0;
             int allHeights = 0;
-            int allLeftPositions = 0;
-            int maxWidth = 0;
 
             for (int i = 1; i < Lines.Count; i++)
             {
@@ -55,49 +59,34 @@ namespace RecipeParser.RecipeJsonModel
                 int line1BottomPoint = line1.Bounds.Top + line1.Bounds.Height;
                 int line2TopPoint = line2.Bounds.Top;
                 // new block of text found
-                if ((line2TopPoint - line1BottomPoint) > line1.Bounds.Height * distanceCoefficient ||
-                    (line2TopPoint - line1BottomPoint) < 0 ||
+                if ((line2TopPoint - line1BottomPoint) > line1.Bounds.Height * distanceCoefficient || // another line is too far, consider a new block of text
+                    (line2TopPoint - line1BottomPoint) < -0.5*(line2.Bounds.Height) || // in case if one line overlaps another one a little
                     i == Lines.Count - 1)
                 {
                     if (i - startLine > 2)
                     {
                         double averageDistancePrecise = allDistances / (i - startLine - 1);
-                        int averageDistance = (int) Math.Round(averageDistancePrecise);
+                        int averageDistance = (int)Math.Round(averageDistancePrecise);
 
                         allHeights += Lines[startLine].Bounds.Height;
                         double averageHeightPrecise = allHeights / (i - startLine);
-                        int averageHeight = (int) Math.Round(averageHeightPrecise);
+                        int averageHeight = (int)Math.Round(averageHeightPrecise);
                         Lines[startLine].Bounds.Height = averageHeight;
-                        /*
-                        if (line2.Bounds.Width > maxWidth)
-                            maxWidth = line2.Bounds.Width;
-                        Lines[startLine].Bounds.Width = maxWidth;
 
-                        allLeftPositions += Lines[startLine].Bounds.Left;
-
-                        double averageLeftPositionPrecise = allLeftPositions / (i - startLine);
-                        int averageLeftPosition = (int)Math.Round(averageLeftPositionPrecise);
-                        Lines[startLine].Bounds.Left = averageLeftPosition;
-                        */
                         for (int j = startLine + 1; j < i; j++)
                         {
                             Lines[j].Bounds.Top = Lines[j - 1].Bounds.Top + Lines[j - 1].Bounds.Height + averageDistance;
                             Lines[j].Bounds.Height = averageHeight;
-                            //Lines[j].Bounds.Width = maxWidth;
-                            //Lines[j].Bounds.Left = averageLeftPosition;
                         }
                     }
                     startLine = i;
                     allDistances = 0;
                     allHeights = 0;
-                    maxWidth = 0;
                     continue;
                 }
+
                 allDistances += (line2TopPoint - line1BottomPoint);
                 allHeights += line2.Bounds.Height;
-                if (line2.Bounds.Width > maxWidth)
-                    maxWidth = line2.Bounds.Width;
-                allLeftPositions += line2.Bounds.Left;
             }
         }
     }

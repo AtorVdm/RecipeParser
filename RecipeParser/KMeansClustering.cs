@@ -6,7 +6,8 @@ namespace RecipeParser
 {
     public class KMeansClustering
     {
-        private const float DISTANCE_COEFFICIENT = 0.02f;
+
+        private const float DISTANCE_COEFFICIENT = 0.125f; // 1/8 - we consider that we have maximum 8 columns
         private int distanceCriteria;
 
         public KMeansClustering(int width)
