@@ -11,18 +11,21 @@
         &nbsp;
         <asp:Button runat="server" ID="btnSubmit" OnClick="btnSubmitClick" Text="Submit"  CssClass="btn btn-danger submitButton" />
         <p />
-        <div id="imageNames"></div>
+        <p id="imageNames"></p>
     </div>
 
     <script type="text/javascript">
         $(".fileUpload input.upload").change(function () {
+            console.log(this.files);
+            
             var fileList = this.files;
-            var text = "";
+            var text = "Files uploaded: ";
             for (var i = 0; i < fileList.length; i++) {
-                var name = fileList[i].fileName;
-                text += name.substring(name.lastIndexOf('\\') + 1, name.length) + "\t";
+                var name = fileList[i].name;
+                console.log(fileList[i]);
+                text += "<p>" +name.substring(name.lastIndexOf('\\') + 1, name.length) + "</p>";
             }
-            $('#imageNames').text(text);
+            $('#imageNames').html(text);
         });
     </script>
 

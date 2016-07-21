@@ -74,6 +74,8 @@ namespace RecipeParser
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             Recipe recipe = serializer.Deserialize<Recipe>(jsonObject);
 
+            if (recipe.OCRExitCode != 1) return;
+
             TextOverlay overlay = recipe.ParsedResults[0].TextOverlay;
             overlay.ComputeExtraFields();
 

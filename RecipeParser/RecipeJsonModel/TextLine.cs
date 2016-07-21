@@ -9,8 +9,8 @@ namespace RecipeParser.RecipeJsonModel
         public List<TextWord> Words { get; set; }
         public int MaxHeight { get; set; }
         public int MinTop { get; set; }
-        public string Text { get; set; }
-        public BlockBounds Bounds { get; set; }
+        public string Text { get; set; } // Extra field
+        public BlockBounds Bounds { get; set; } // Extra field
 
         public void ComputeExtraFields()
         {
