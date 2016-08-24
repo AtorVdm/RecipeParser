@@ -65,3 +65,6 @@
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\obj\Debug\RecipeParser.dll
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\obj\Debug\RecipeParser.pdb
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\alglibnet2.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\AbbyyOnlineSdk.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\NDesk.Options.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\AbbyyOnlineSdk.pdb

@@ -11,6 +11,7 @@ namespace RecipeParser.RecipeJsonModel
         public int MinTop { get; set; }
         public string Text { get; set; } // Extra field
         public BlockBounds Bounds { get; set; } // Extra field
+        public bool Bold { get; set; } // Extra field
 
         public void ComputeExtraFields()
         {
