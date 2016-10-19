@@ -20,11 +20,25 @@ namespace RecipeParser.RecipeJsonModel
 
             int left = int.MaxValue, width = 0;
 
-            foreach (TextWord word in Words)
+            int boldWords = 0;
+            for (int i = 0; i < Words.Count; i++)
             {
+                TextWord word = Words[i];
                 // composing text line from words
+                if (word.Bold)
+                {
+                    if (i > 0 && Words[i - 1].Bold)
+                    {
+                        output.Remove(output.Length - 8, 7);
+                    }
+                    else
+                    {
+                        output.Append("<span data-ml=\"bold\">");
+                    }
+                }
                 output.Append(word.WordText);
-                if (Words.IndexOf(word) < Words.Count - 1)
+                if (word.Bold) output.Append("</span>");
+                if (i < Words.Count - 1)
                 {
                     output.Append(" ");
                 }
@@ -33,6 +47,14 @@ namespace RecipeParser.RecipeJsonModel
                 width += word.Width;
                 if (word.Left < left)
                     left = word.Left;
+
+                if (word.Bold) boldWords++;
+            }
+            if (boldWords/5 == Words.Count/5)
+            {
+                output.Replace("<span data-ml=\"bold\">", String.Empty);
+                output.Replace("</span>", String.Empty);
+                Bold = true;
             }
 
             blockBounds.Left = left;

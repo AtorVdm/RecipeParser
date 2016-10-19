@@ -9,7 +9,7 @@ namespace RecipeParser.OCR.Space
     {
         private const string OCR_API_URI_STRING = "https://api.ocr.space/parse/image";
 
-        public string processPicture(byte[] pictureBytes, string name)
+        public string ProcessPicture(byte[] pictureBytes, string name)
         {
             using (var client = new WebClient())
             {

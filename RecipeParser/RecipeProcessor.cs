@@ -18,12 +18,13 @@ namespace RecipeParser
 
         private string fileName;
 
-        public string ProcessAbbyyXML(XElement xdoc, string path)
+        public Recipe ProcessAbbyyXML(XElement xdoc, string path)
         {
+            fileName = path;
             return ocrAbbyy.ProcessAbbyyXML(xdoc, path);
         }
 
-        public void processUploadedFile(HttpPostedFile file)
+        public void ProcessUploadedFile(HttpPostedFile file)
         {
             fileName = String.Format(@"C:\test\{0}_{1}", file.FileName, DateTime.Now.ToString("MM-dd-hh-mm-ss"));
 
@@ -33,7 +34,7 @@ namespace RecipeParser
                 fileData = binaryReader.ReadBytes(file.ContentLength);
             }
 
-            string jsonObject = ocrSpace.processPicture(fileData, file.FileName);
+            string jsonObject = ocrSpace.ProcessPicture(fileData, file.FileName);
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             Recipe recipe = serializer.Deserialize<Recipe>(jsonObject);
@@ -52,7 +53,7 @@ namespace RecipeParser
             GenerateAreasPicture(recipe.ParsedResults[0].TextOverlay);
         }
 
-        private void GenerateAreasPicture(TextOverlay overlay)
+        public void GenerateAreasPicture(TextOverlay overlay)
         {
             Bitmap flag = new Bitmap(overlay.Width, overlay.Height);
             Graphics flagGraphics = Graphics.FromImage(flag);

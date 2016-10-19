@@ -9,7 +9,7 @@ namespace RecipeParser.OCR.Abbyy
 {
     public class OCRAbbyyMain
     {
-        public string ProcessAbbyyXML(XElement xdoc, string path)
+        public Recipe ProcessAbbyyXML(XElement xdoc, string path)
         {
             XNamespace ad = "http://www.abbyy.com/FineReader_xml/FineReader10-schema-v1.xml";
             StringBuilder result = new StringBuilder();
@@ -31,40 +31,50 @@ namespace RecipeParser.OCR.Abbyy
                 TextLine textLine = new TextLine();
                 textLine.Words = new List<TextWord>();
                 List<string> segmentLine = new List<string>();
-                int serifProbability = 0;
+                
                 TextWord textWord = new TextWord();
                 StringBuilder wordText = new StringBuilder();
+                int isBold = 0;
+
                 textWord.Left = Int32.Parse(line.Attribute("l").Value);
+
+                int altHeight = 0;
+
                 foreach (XElement character in line.Descendants(ad + "charParams"))
                 {
                     if (character.LastNode.NodeType == System.Xml.XmlNodeType.Text)
                     {
                         String chr = ((XText)character.LastNode).Value;
-                        if (Int32.Parse(character.Attribute("serifProbability").Value) > 80)
+                        if (Int32.Parse(character.Attribute("meanStrokeWidth").Value) > 80)
                         {
-                            serifProbability++;
+                            isBold++;
                         }
                         else
                         {
-                            serifProbability--;
+                            isBold--;
                         }
                         segmentLine.Add(chr);
                         wordText.Append(chr);
                     }
                     else
                     {
-                        textWord.WordText = wordText.ToString();
-                        textWord.Width = Int32.Parse(character.Attribute("l").Value) - textWord.Left;
-                        textLine.Words.Add(textWord);
-                        wordText = new StringBuilder();
+                        textLine.Words.Add(SetTextWord(textWord, isBold >= 0, wordText.ToString(), character.Attribute("l").Value));
+                        
                         textWord = new TextWord();
+                        wordText = new StringBuilder();
+                        isBold = 0;
+
                         textWord.Left = Int32.Parse(character.Attribute("r").Value);
                         segmentLine.Add(" ");
+                        int temp = Int32.Parse(character.Attribute("t").Value) - Int32.Parse(character.Attribute("b").Value);
+                        altHeight += temp;
+                        if (altHeight != temp)
+                            altHeight = altHeight / 2;
                     }
                 }
-                textWord.WordText = wordText.ToString();
-                textWord.Width = Int32.Parse(line.Attribute("r").Value) - textWord.Left;
-                textLine.Words.Add(textWord);
+                
+                textLine.Words.Add(SetTextWord(textWord, isBold >= 0, wordText.ToString(), line.Attribute("r").Value));
+
                 List<string> segment = new List<string>();
                 int left = Int32.Parse(line.Attribute("l").Value);
                 int top = Int32.Parse(line.Attribute("t").Value);
@@ -72,9 +82,8 @@ namespace RecipeParser.OCR.Abbyy
                 int bottom = Int32.Parse(line.Attribute("b").Value);
                 textLine.MaxHeight = bottom - top;
                 textLine.MinTop = top;
-                textLine.Bold = serifProbability >= 0;
-                segment.Add(String.Format("\t<p data-ml=\"{0} {1} {2} {3}{4}block>\">",
-                    left, top, right - left, bottom - top, serifProbability >= 0 ? "bold " : String.Empty));
+                segment.Add(String.Format("\t<p data-ml=\"{0} {1} {2} {3} block>\">",
+                    left, top, right - left, altHeight));
                 segment.AddRange(segmentLine);
                 segment.Add("</p>\n");
                 string str = segment.Aggregate(new StringBuilder(),
@@ -85,12 +94,16 @@ namespace RecipeParser.OCR.Abbyy
                 textOverlay.Lines.Add(textLine);
             }
             result.Append("</body>\n</html>");
+            
+            return recipe;
+        }
 
-            string htmlOutput = RecipeHTMLConverter.ConvertRecipeToHTML(recipe);
-
-            //File.WriteAllText(path + ".html", htmlOutput, swedishEncoding);
-            //GenerateAreasPicture(recipe.ParsedResults[0].TextOverlay);
-            return result.ToString();
+        private TextWord SetTextWord(TextWord textWord, bool bold, string text, string right)
+        {
+            textWord.Bold = bold;
+            textWord.WordText = text;
+            textWord.Width = Int32.Parse(right) - textWord.Left;
+            return textWord;
         }
     }
 }

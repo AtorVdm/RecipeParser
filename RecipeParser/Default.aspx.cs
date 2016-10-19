@@ -3,6 +3,8 @@ using System.Text;
 using System.Web.UI;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using RecipeParser.RecipeJsonModel;
+using System.IO;
 
 namespace RecipeParser
 {
@@ -18,7 +20,8 @@ namespace RecipeParser
         
         protected void btnSubmitClick(object sender, EventArgs e)
         {
-            SendAbbyyResponse(); if(processor!=null) return;
+            SendAbbyyResponse();
+            if (processor!=null) return;
 
             if (!uploadedFile.HasFiles)
             {
@@ -37,7 +40,7 @@ namespace RecipeParser
             //string jsonObject = File.ReadAllText(@"C:\test\jsonTest.txt", swedishEncoding);
             foreach (var file in uploadedFile.PostedFiles)
             {
-                processor.processUploadedFile(file);
+                processor.ProcessUploadedFile(file);
             }
 
             Response.Clear();
@@ -57,20 +60,25 @@ namespace RecipeParser
             bool hasError = (bool)json["IsErroredOnProcessing"];
             string errorMessage = (string)json["ErrorMessage"];*/
 
-            List<string> pathes = new List<string>();/*
+            List<string> pathes = new List<string>();
             pathes.Add(Server.MapPath("~/input/IMG_0030"));
             pathes.Add(Server.MapPath("~/input/IMG_0031"));
             pathes.Add(Server.MapPath("~/input/IMG_0032"));
-            pathes.Add(Server.MapPath("~/input/IMG_20160411_120428"));*/
-            pathes.Add(Server.MapPath("~/input/IMG_20160411_120615"));/*
-            pathes.Add(Server.MapPath("~/input/IMG_20160411_120649"));*/
+            pathes.Add(Server.MapPath("~/input/IMG_20160411_120428"));
+            pathes.Add(Server.MapPath("~/input/IMG_20160411_120615"));
+            pathes.Add(Server.MapPath("~/input/IMG_20160411_120649"));
 
             string htmlOutput = String.Empty;
+            Recipe recipe = null;
             foreach (string path in pathes)
             {
                 XElement xdoc = XElement.Load(path + ".xml");
-                htmlOutput = processor.ProcessAbbyyXML(xdoc, path);
+                recipe = processor.ProcessAbbyyXML(xdoc, path);
+                htmlOutput = RecipeHTMLConverter.ConvertRecipeToHTML(recipe);
+                processor.GenerateAreasPicture(recipe.ParsedResults[0].TextOverlay);
+                File.WriteAllText(path + ".html", htmlOutput, swedishEncoding);
             }
+            
             Response.Clear();
             Response.ClearHeaders();
             Response.AddHeader("Content-Type", "text/html; charset=" + swedishEncoding.EncodingName);

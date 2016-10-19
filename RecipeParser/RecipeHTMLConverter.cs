@@ -33,8 +33,8 @@ namespace RecipeParser
             output.AppendLine(String.Format("<body data-ml=\"{0} {1} {2} {3} block\">", 0, 0, overlay.Width, overlay.Height));
             foreach (TextLine line in overlay.Lines)
             {
-                output.AppendLine(String.Format("<p data-ml=\"{0} {1} {2} {3} {5}block\">{4}</p>",
-                    line.Bounds.Left, line.Bounds.Top, line.Bounds.Width, line.Bounds.Height, line.Text, line.Bold? "bold ": String.Empty));
+                output.AppendLine(String.Format("<p data-ml=\"{0} {1} {2} {3} {4}block\">{5}</p>",
+                    line.Bounds.Left, line.Bounds.Top, line.Bounds.Width, line.Bounds.Height, line.Bold? "bold ": String.Empty, line.Text));
             }
             output.AppendLine("</body>");
             output.AppendLine("</html>");

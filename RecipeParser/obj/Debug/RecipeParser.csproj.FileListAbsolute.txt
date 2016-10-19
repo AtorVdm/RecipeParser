@@ -64,7 +64,11 @@
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\obj\Debug\RecipeParser.csprojResolveAssemblyReference.cache
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\obj\Debug\RecipeParser.dll
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\obj\Debug\RecipeParser.pdb
-\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\alglibnet2.dll
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\AbbyyOnlineSdk.dll
-\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\NDesk.Options.dll
 \\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\AbbyyOnlineSdk.pdb
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Net.Http.Formatting.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Web.Http.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Web.Http.WebHost.dll
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Net.Http.Formatting.xml
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Web.Http.xml
+\\psf\home\Projects\VS\RecipeParser\RecipeParser\bin\System.Web.Http.WebHost.xml
