@@ -66,18 +66,18 @@ namespace RecipeParser.Controllers
         [HttpPost]
         public async Task<string> ProcessRecipe()
         {
-            var multipartRequest = await Request.Content.ReadAsMultipartAsync();
-            byte[] image = await multipartRequest.Contents[0].ReadAsByteArrayAsync();
+	        string jsonObject = await Request.Content.ReadAsStringAsync();
+			//byte[] image = await Request.Content.ReadAsByteArrayAsync();
 
-            if (image == null)
-                image = File.ReadAllBytes(@"C:\test\new\IMG_0030.jpg");
-            OCR.Space.OCRSpaceMain ocrSpace = new OCR.Space.OCRSpaceMain();
-            string jsonObject = ocrSpace.ProcessPicture(image, "TestImageName.jpg");
+			//if (image == null)
+			//	image = File.ReadAllBytes(@"C:\test\new\IMG_0030.jpg");
+			//OCR.Space.OCRSpaceMain ocrSpace = new OCR.Space.OCRSpaceMain();
+			//string jsonObject = ocrSpace.ProcessPicture(image, "TestImageName.jpg");
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            Recipe recipe = serializer.Deserialize<Recipe>(jsonObject);
+			JavaScriptSerializer serializer = new JavaScriptSerializer();
+			Recipe recipe = serializer.Deserialize<Recipe>(jsonObject);
 
-            if (recipe.OCRExitCode != 1) return null;
+			if (recipe.OCRExitCode != 1) return null;
 
             TextOverlay overlay = recipe.ParsedResults[0].TextOverlay;
             overlay.ComputeExtraFields();
